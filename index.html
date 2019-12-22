@@ -1,0 +1,551 @@
+
+<html>
+    <head>
+        <title>Spinning Winning Wheel</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">        <link rel="stylesheet" href="main.css" type="text/css" />
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+        <script type="text/javascript" src="Winwheel.js"></script>
+
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+    </head>
+    <body onload="fillText()">
+    <div style="margin-bottom: 2%;margin-top: 1%">
+<input type="button" value="PLAY AGAIN"style="padding: 0.5%;font-size: large;background-color: aqua;display: inline;margin-left: 25%
+                                            " onclick="resetWheel()">
+
+        <label  style="margin-left: 5%;font-size: larger;font-family: 'Berlin Sans FB Demi';color: chocolate">SPEED:</label>
+        <input type="button" value="HIGH" id="pw3" onClick="powerSelected(3);" style="font-size: large;background-color: crimson;padding: 0.5%;color: white" >
+        <input type="button" value="MEDIUM"id="pw2" onClick="powerSelected(2);" style="font-size: large;background-color: crimson;padding: 0.5%;color: white">
+        <input type="button" value="LOW" id="pw1" onClick="powerSelected(1);" style="font-size: large;background-color: crimson;padding: 0.5%;color: white">
+
+    </div>
+
+<table>
+        <tr>     <td align="left" class="the_wheel" >
+
+        <div style="margin-top: 7%">
+
+            <canvas id="canvas" width=650" height="500" onclick="startSpin()">
+        </canvas>
+            <img id="spin_button" src="spin_on.png" alt="Spin" onClick="startSpin();" onmouseover="" style="cursor: pointer;padding-left: 40%;display: none" />
+
+        </div>
+
+        <div style="margin-left:40%">
+        </div>
+         </td>
+        <td align="right" class="the_wheel" style="margin-left: 50%"  >
+            <div style="margin-top: 7%">
+            <canvas id="canvas2" width="650" height="500" onclick="startSpin2()">
+            </canvas>
+                <img id="spin_button2" src="spin_on.png" alt="Spin" onClick="startSpin2();" onmouseover="" style="cursor: pointer;padding-right: 40%;display: none" />
+
+            </div>
+
+
+
+        </td>
+    </tr>
+    </table>
+<div class="row">
+    <div class="col-md-1">
+
+    </div>
+    <div class="col-md-4">
+            <label>Names</label>
+            <textarea style="height: 80%" id ="text" class="form-control" cols="3" rows="10"></textarea>
+        <input type="button" id="btn1" onclick="change()" value="DONE" style="background-color: #86ef6f;padding: 2%;margin-top: 2%">
+    </div>
+    <div class="col-sm-2">
+
+    </div>
+    <div class="col-md-4">
+            <label>Prizes</label>
+            <textarea style="height: 100%" id ="text2" class="form-control" cols="3" rows="10"></textarea>
+        <input type="button" id="btn2" onclick="change2()" value="DONE" style="background-color: #86ef6f;padding: 2%;margin-top: 2%">
+
+
+    </div>
+    </div>
+    <div style="height: 20%">
+
+    </div>
+
+    <script>
+            var canvas = document.getElementById('canvas');
+            var heightRatio = 0.9;
+            canvas.height = canvas.width * heightRatio;
+            var canvas2 = document.getElementById('canvas2');
+            var heightRatio2 = 0.9;
+            canvas2.height = canvas2.width * heightRatio2;
+            // Create new wheel object specifying the parameters at creation time.
+            let theWheel = new Winwheel({
+                'canvasId':'canvas',
+                'outerRadius'     : 290,        // Set outer radius so wheel fits inside the background.
+                'innerRadius'     : 75,         // Make wheel hollow so segments don't go all way to center.
+                'textFontSize'    : 12,         // Set default font size for the segments.
+                'textOrientation' : 'vertical', // Make text vertial so goes down from the outside of wheel.
+                'textAlignment'   : 'outer',
+                'textMargin' : 2,
+
+                // Align text to outside of wheel.
+                'numSegments'     : 103,         // Specify number of segments.
+                'segments'        :             // Define segments including colour and text.
+                [                               // font size and test colour overridden on backrupt segments.
+                   {'fillStyle' : '#ee1c24', 'text' : 'Freda Yeo'},
+                    {'fillStyle' : '#3cb878', 'text' : 'Cindy Pang'},
+                    {'fillStyle' : '#f6989d', 'text' : 'Joann Tan'},
+                    {'fillStyle' : '#00aef0', 'text' : 'Serene Yap'},
+                    {'fillStyle' : '#f26522', 'text' : 'Jessica Teo'},
+                    {'fillStyle' : '#ee1c24', 'text' : 'Theresa'},
+                    {'fillStyle' : '#e70697', 'text' : 'Marc Low'},
+                    {'fillStyle' : '#fff200', 'text' : 'Shalma'},
+                   {'fillStyle' : '#3cb878', 'text' : 'Ronald Aw'},
+                   {'fillStyle' : '#f6989d', 'text' : 'Belle Ngoh'},
+                   {'fillStyle' : '#00aef0', 'text' : 'Joanna Young'},
+                   {'fillStyle' : '#f26522', 'text' : 'Eunice Toh'},
+                   {'fillStyle' : '#fff200', 'text' : 'Fenessa Cheh'},
+                   {'fillStyle' : '#e70697', 'text' : 'Monica Choo'},
+                   {'fillStyle' : '#fff200', 'text' : 'Jean Lim'},
+                   {'fillStyle' : '#ee1c24', 'text' : 'Melissa Ho'},
+                   {'fillStyle' : '#f6989d', 'text' : 'Sean Siah'},
+                   {'fillStyle' : '#f26522', 'text' : 'Christie Yew'},
+                   {'fillStyle' : '#3cb878', 'text' : 'Ho Kheng Seng'},
+                   {'fillStyle' : '#ee1c24', 'text' : 'Florence Yuen'},
+                   {'fillStyle' : '#a186be', 'text' : 'James Khoo'},
+                   {'fillStyle' : '#fff200', 'text' : 'See Siok Mei'},
+                   {'fillStyle' : '#00aef0', 'text' : 'Stephanie Tan'},
+                   {'fillStyle' : '#ffffff', 'text' : 'Josephine Low'},
+                    {'fillStyle' : '#e70697', 'text' : 'Ria Alcober'},
+                    {'fillStyle' : '#fff200', 'text' : 'Janice Lim'},
+                    {'fillStyle' : '#ee1c24', 'text' : 'Ang Kok Chye'},
+                    {'fillStyle' : '#f6989d', 'text' : 'Lee Mun Yee'},
+                    {'fillStyle' : '#f26522', 'text' : 'Veronica Ong'},
+                    {'fillStyle' : '#3cb878', 'text' : 'Carey Teo'},
+                    {'fillStyle' : '#fff200', 'text' : 'Felicia Fang'},
+                    {'fillStyle' : '#a186be', 'text' : 'Rebecca Lee'},
+                    {'fillStyle' : '#fff200', 'text' : 'Anthony Eng'},
+                    {'fillStyle' : '#00aef0', 'text' : 'Serene Lim'},
+                    {'fillStyle' : '#ffffff', 'text' : 'Kathy Dang'},
+                    {'fillStyle' : '#e70697', 'text' : 'Kit Chiong'},
+                    {'fillStyle' : '#fff200', 'text' : 'Jesvin Yeau'},
+                    {'fillStyle' : '#ee1c24', 'text' : 'Kelly Cheong'},
+                    {'fillStyle' : '#f6989d', 'text' : 'Tan Wei Ling'},
+                    {'fillStyle' : '#f26522', 'text' : 'Cannie Goh'},
+                    {'fillStyle' : '#3cb878', 'text' : 'Joshua Seah'},
+                    {'fillStyle' : '#e70697', 'text' : 'Gwen Ong'},
+                    {'fillStyle' : '#a186be', 'text' : 'Pauline Khor'},
+                    {'fillStyle' : '#fff200', 'text' : 'Ivy Ng'},
+                    {'fillStyle' : '#00aef0', 'text' : 'Cecilia Lee'},
+                    {'fillStyle' : '#ffffff', 'text' : 'Seraphine Chan'},
+                    {'fillStyle' : '#00aef0', 'text' : 'Carmen Kah  '},
+                    {'fillStyle' : '#ffffff', 'text' : 'Jeffrey Lai'},
+                    {'fillStyle' : '#e70697', 'text' : 'Margaret Eu'},
+                    {'fillStyle' : '#fff200', 'text' : 'Mabel Ong'},
+                    {'fillStyle' : '#ee1c24', 'text' : 'Bell Cherng'},
+                    {'fillStyle' : '#f6989d', 'text' : 'Karen Chin'},
+                    {'fillStyle' : '#f26522', 'text' : 'Irene Neo'},
+                    {'fillStyle' : '#3cb878', 'text' : 'Ben Chen'},
+                    {'fillStyle' : '#e70697', 'text' : 'Mandy Sia'},
+                    {'fillStyle' : '#a186be', 'text' : 'Apple Koh '},
+                    {'fillStyle' : '#fff200', 'text' : 'Elizabeth Goh'},
+                    {'fillStyle' : '#00aef0', 'text' : 'Calista Tay'},
+                    {'fillStyle' : '#ffffff', 'text' : 'Adrian Ang'},
+                    {'fillStyle' : '#ffffff', 'text' : 'Cleo'},
+                    {'fillStyle' : '#00aef0', 'text' : 'May Low'},
+                    {'fillStyle' : '#ffffff', 'text' : 'Esmund Yap'},
+                    {'fillStyle' : '#e70697', 'text' : 'Lily Tay'},
+                    {'fillStyle' : '#fff200', 'text' : 'Doris Low'},
+                    {'fillStyle' : '#ee1c24', 'text' : 'Jasmine Teo'},
+                    {'fillStyle' : '#f6989d', 'text' : 'Richard(Driver)'},
+                    {'fillStyle' : '#f26522', 'text' : 'Cherie Yong'},
+                    {'fillStyle' : '#3cb878', 'text' : 'Yoges'},
+                    {'fillStyle' : '#fff200', 'text' : 'Stephanie Khoo'},
+                    {'fillStyle' : '#a186be', 'text' : 'Daphne Tan'},
+                    {'fillStyle' : '#fff200', 'text' : 'Jessie Teh'},
+                    {'fillStyle' : '#00aef0', 'text' : 'Mandy Koo'},
+                    {'fillStyle' : '#ffffff', 'text' : 'Elaine Loh'},
+                    {'fillStyle' : '#ffffff', 'text' : 'Carmen Chong'},
+                    {'fillStyle' : '#00aef0', 'text' : 'Nicole Lai'},
+                    {'fillStyle' : '#ffffff', 'text' : 'Kendy Chong'},
+                    {'fillStyle' : '#e70697', 'text' : 'Ashley Woo'},
+                    {'fillStyle' : '#fff200', 'text' : 'Damawi'},
+                    {'fillStyle' : '#ee1c24', 'text' : 'Tony Teo'},
+                    {'fillStyle' : '#f6989d', 'text' : 'Angela Lai'},
+                    {'fillStyle' : '#f26522', 'text' : 'Jacky Lim'},
+                    {'fillStyle' : '#3cb878', 'text' : 'Sky Nar'},
+                    {'fillStyle' : '#ee1c24', 'text' : 'Dapheni Teo'},
+                    {'fillStyle' : '#a186be', 'text' : 'Daphne Tan'},
+                    {'fillStyle' : '#fff200', 'text' : 'June Sim'},
+                    {'fillStyle' : '#00aef0', 'text' : 'Inez Oh'},
+                    {'fillStyle' : '#ffffff', 'text' : 'Jessica Teo'},
+                    {'fillStyle' : '#e70697', 'text' : 'Malani'},
+                    {'fillStyle' : '#fff200', 'text' : 'Sindhu'},
+                    {'fillStyle' : '#ee1c24', 'text' : 'Shalma'},
+                    {'fillStyle' : '#f6989d', 'text' : 'Muzni '},
+                    {'fillStyle' : '#f26522', 'text' : 'Rizal '},
+                    {'fillStyle' : '#3cb878', 'text' : 'John'},
+                    {'fillStyle' : '#ee1c24', 'text' : 'Tapah'},
+                    {'fillStyle' : '#a186be', 'text' : 'Yam'},
+                    {'fillStyle' : '#fff200', 'text' : 'Nazri'},
+                    {'fillStyle' : '#00aef0', 'text' : 'Sandra Lee'},
+                    {'fillStyle' : '#ffffff', 'text' : 'Gowri Edwards'},
+                    {'fillStyle' : '#e70697', 'text' : 'Jonie Lim'},
+                    {'fillStyle' : '#fff200', 'text' : 'Eileen Siew'},
+                    {'fillStyle' : '#ee1c24', 'text' : 'Tai Shiau Chen'},
+                    {'fillStyle' : '#f6989d', 'text' : 'Yap Yee Wei '},
+                    {'fillStyle' : '#f26522', 'text' : 'Kim Chia '}
+                ],
+                'animation' :           // Specify the animation to use.
+                {
+                    'type'     : 'spinToStop',
+                    'duration' : 10,    // Duration in seconds.
+                    'spins'    : 3,     // Default number of complete spins.
+                    'callbackFinished' : alertPrize,
+                    'callbackSound'    : playSound,   // Function to call when the tick sound is to be triggered.
+                    'soundTrigger'     : 'pin'        // Specify pins are to trigger the sound, the other option is 'segment'.
+                },
+                'pins' :				// Turn pins on.
+                {
+                    'number'     : 24,
+                    'fillStyle'  : 'silver',
+                    'outerRadius': 4,
+                }
+            });
+            let theWheel2 = new Winwheel({
+                'canvasId':'canvas2',
+                'outerRadius'     : 290,        // Set outer radius so wheel fits inside the background.
+                'innerRadius'     : 75,         // Make wheel hollow so segments don't go all way to center.
+                'textFontSize'    : 15,
+                'textMargin' : 2,
+
+                // Set default font size for the segments.
+                'textOrientation' : 'vertical', // Make text vertial so goes down from the outside of wheel.
+                'textAlignment'   : 'outer',
+
+// Align text to outside of wheel.
+                'numSegments'     : 102,         // Specify number of segments.
+                'segments'        :             // Define segments including colour and text.
+                    [                               // font size and test colour overridden on backrupt segments.
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 001'},
+                        {'fillStyle' : '#3cb878', 'text' : 'Prize 002'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 003'},
+                        {'fillStyle' : '#00aef0', 'text' : 'Prize 004'},
+                        {'fillStyle' : '#f26522', 'text' : 'Prize 005'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 006'},
+                        {'fillStyle' : '#e70697', 'text' : 'Prize 007'},
+                        {'fillStyle' : '#fff200', 'text' : 'Prize 008'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 009'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 010'},
+                        {'fillStyle' : '#f26522', 'text' : 'Prize 011'},
+                        {'fillStyle' : '#3cb878', 'text' : 'Prize 012'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 013'},
+                        {'fillStyle' : '#a186be', 'text' : 'Prize 014'},
+                        {'fillStyle' : '#fff200', 'text' : 'Prize 015'},
+                        {'fillStyle' : '#00aef0', 'text' : 'Prize 016'},
+                        {'fillStyle' : '#ffffff', 'text' : 'Prize 017'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 018'},
+                        {'fillStyle' : '#3cb878', 'text' : 'Prize 019'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 020'},
+                        {'fillStyle' : '#00aef0', 'text' : 'Prize 021'},
+                        {'fillStyle' : '#f26522', 'text' : 'Prize 022'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 023'},
+                        {'fillStyle' : '#e70697', 'text' : 'Prize 024'},
+                        {'fillStyle' : '#fff200', 'text' : 'Prize 025'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 026'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 027'},
+                        {'fillStyle' : '#f26522', 'text' : 'Prize 028'},
+                        {'fillStyle' : '#3cb878', 'text' : 'Prize 029'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 030'},
+                        {'fillStyle' : '#a186be', 'text' : 'Prize 031'},
+                        {'fillStyle' : '#fff200', 'text' : 'Prize 032'},
+                        {'fillStyle' : '#00aef0', 'text' : 'Prize 033'},
+                        {'fillStyle' : '#ffffff', 'text' : 'Prize 034'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 035'},
+                        {'fillStyle' : '#3cb878', 'text' : 'Prize 036'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 037'},
+                        {'fillStyle' : '#00aef0', 'text' : 'Prize 038'},
+                        {'fillStyle' : '#f26522', 'text' : 'Prize 039'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 040'},
+                        {'fillStyle' : '#e70697', 'text' : 'Prize 041'},
+                        {'fillStyle' : '#fff200', 'text' : 'Prize 042'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 043'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 044'},
+                        {'fillStyle' : '#f26522', 'text' : 'Prize 045'},
+                        {'fillStyle' : '#3cb878', 'text' : 'Prize 046'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 047'},
+                        {'fillStyle' : '#a186be', 'text' : 'Prize 048'},
+                        {'fillStyle' : '#fff200', 'text' : 'Prize 049'},
+                        {'fillStyle' : '#00aef0', 'text' : 'Prize 050'},
+                        {'fillStyle' : '#ffffff', 'text' : 'Prize 051'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 052'},
+                        {'fillStyle' : '#3cb878', 'text' : 'Prize 053'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 054'},
+                        {'fillStyle' : '#00aef0', 'text' : 'Prize 055'},
+                        {'fillStyle' : '#f26522', 'text' : 'Prize 056'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 057'},
+                        {'fillStyle' : '#e70697', 'text' : 'Prize 058'},
+                        {'fillStyle' : '#fff200', 'text' : 'Prize 059'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 060'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 061'},
+                        {'fillStyle' : '#f26522', 'text' : 'Prize 062'},
+                        {'fillStyle' : '#3cb878', 'text' : 'Prize 063'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 064'},
+                        {'fillStyle' : '#a186be', 'text' : 'Prize 065'},
+                        {'fillStyle' : '#fff200', 'text' : 'Prize 066'},
+                        {'fillStyle' : '#00aef0', 'text' : 'Prize 067'},
+                        {'fillStyle' : '#ffffff', 'text' : 'Prize 068'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 069'},
+                        {'fillStyle' : '#3cb878', 'text' : 'Prize 070'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 071'},
+                        {'fillStyle' : '#00aef0', 'text' : 'Prize 072'},
+                        {'fillStyle' : '#f26522', 'text' : 'Prize 073'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 074'},
+                        {'fillStyle' : '#e70697', 'text' : 'Prize 075'},
+                        {'fillStyle' : '#fff200', 'text' : 'Prize 076'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 077'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 078'},
+                        {'fillStyle' : '#f26522', 'text' : 'Prize 079'},
+                        {'fillStyle' : '#3cb878', 'text' : 'Prize 080'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 081'},
+                        {'fillStyle' : '#a186be', 'text' : 'Prize 082'},
+                        {'fillStyle' : '#fff200', 'text' : 'Prize 083'},
+                        {'fillStyle' : '#00aef0', 'text' : 'Prize 084'},
+                        {'fillStyle' : '#ffffff', 'text' : 'Prize 085'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 086'},
+                        {'fillStyle' : '#00aef0', 'text' : 'Prize 087'},
+                        {'fillStyle' : '#f26522', 'text' : 'Prize 088'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 089'},
+                        {'fillStyle' : '#e70697', 'text' : 'Prize 090'},
+                        {'fillStyle' : '#fff200', 'text' : 'Prize 091'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 092'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 093'},
+                        {'fillStyle' : '#f26522', 'text' : 'Prize 094'},
+                        {'fillStyle' : '#3cb878', 'text' : 'Prize 095'},
+                        {'fillStyle' : '#f6989d', 'text' : 'Prize 096'},
+                        {'fillStyle' : '#a186be', 'text' : 'Prize 097'},
+                        {'fillStyle' : '#fff200', 'text' : 'Prize 098'},
+                        {'fillStyle' : '#fff200', 'text' : 'Prize 099'},
+                        {'fillStyle' : '#00aef0', 'text' : 'Prize 100'},
+                        {'fillStyle' : '#ffffff', 'text' : 'Prize 101'},
+                        {'fillStyle' : '#ee1c24', 'text' : 'Prize 102'}
+                    ],
+                'animation' :           // Specify the animation to use.
+                    {
+                        'type'     : 'spinToStop',
+                        'duration' : 10,    // Duration in seconds.
+                        'spins'    : 3,     // Default number of complete spins.
+                        'callbackFinished' : alertPrize2,
+                        'callbackSound'    : playSound,   // Function to call when the tick sound is to be triggered.
+                        'soundTrigger'     : 'pin'        // Specify pins are to trigger the sound, the other option is 'segment'.
+                    },
+                'pins' :				// Turn pins on.
+                    {
+                        'number'     : 24,
+                        'fillStyle'  : 'silver',
+                        'outerRadius': 4,
+
+                    }
+            });
+
+            // Loads the tick audio sound in to an audio object.
+            let audio = new Audio('tick.mp3');
+
+            // This function is called when the sound is to be played.
+            function playSound()
+            {
+                // Stop and rewind the sound if it already happens to be playing.
+                audio.pause();
+                audio.currentTime = 0;
+
+                // Play the sound.
+                audio.play();
+            }
+
+            // Vars used by the code in this page to do power controls.
+            let wheelPower    = 0;
+            let wheelSpinning = false;
+
+            // -------------------------------------------------------
+            // Function to handle the onClick on the power buttons.
+            // -------------------------------------------------------
+            function powerSelected(powerLevel)
+            {
+                // Ensure that power can't be changed while wheel is spinning.
+                if (wheelSpinning == false) {
+
+                    // Set wheelPower var used when spin button is clicked.
+                    wheelPower = powerLevel;
+
+                    // Light up the spin button by changing it's source image and adding a clickable class to it.
+
+                }
+
+            }
+
+            // -------------------------------------------------------
+            // Click handler for spin button.
+            // -------------------------------------------------------
+            function startSpin()
+            {
+                // Ensure that spinning can't be clicked again while already running.
+                if (wheelSpinning == false) {
+                    // Based on the power level selected adjust the number of spins for the wheel, the more times is has
+                    // to rotate with the duration of the animation the quicker the wheel spins.
+                        theWheel.animation.spins = wheelPower;
+
+
+
+                    // Disable the spin button so can't click again while wheel is spinning.
+                    document.getElementById('spin_button').src       = "spin_off.png";
+                    document.getElementById('spin_button').className = "";
+                    document.getElementById('spin_button').style.cursor="default";
+
+
+                    // Begin the spin animation by calling startAnimation on the wheel object.
+                    theWheel.startAnimation();
+
+                    // Set to true so that power can't be changed and spin button re-enabled during
+                    // the current animation. The user will have to reset before spinning again.
+                    wheelSpinning = true;
+                }
+            }
+           var  wheelSpinning2=false
+            function startSpin2()
+            {
+                // Ensure that spinning can't be clicked again while already running.
+                if (wheelSpinning2 == false) {
+                    // Based on the power level selected adjust the number of spins for the wheel, the more times is has
+                    // to rotate with the duration of the animation the quicker the wheel spins.
+                    theWheel2.animation.spins = wheelPower;
+
+
+                    // Disable the spin button so can't click again while wheel is spinning.
+                    document.getElementById('spin_button2').src       = "spin_off.png";
+                    document.getElementById('spin_button2').className = "";
+                    document.getElementById('spin_button').style.cursor="default";
+
+
+                    // Begin the spin animation by calling startAnimation on the wheel object.
+                    theWheel2.startAnimation();
+
+                    // Set to true so that power can't be changed and spin button re-enabled during
+                    // the current animation. The user will have to reset before spinning again.
+                    wheelSpinning2 = true;
+                }
+            }
+
+            // -------------------------------------------------------
+            // Function for reset button.
+            // -------------------------------------------------------
+            function resetWheel()
+            {
+                theWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
+                theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
+                theWheel.draw();
+                theWheel2.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
+                theWheel2.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
+                theWheel2.draw(); // Call draw to render changes to the wheel.
+                document.getElementById('spin_button2').src       = "spin_on.png";
+                document.getElementById('spin_button').src       = "spin_on.png";
+                document.getElementById('spin_button2').style.cursor="pointer";
+                document.getElementById('spin_button').style.cursor="pointer";
+
+
+                document.getElementById('pw1').className = "";  // Remove all colours from the power level indicators.
+                document.getElementById('pw2').className = "";
+                document.getElementById('pw3').className = "";
+
+                wheelSpinning = false;
+                wheelSpinning2=false;// Reset to false to power buttons and spin can be clicked again.
+            }
+
+            // -------------------------------------------------------
+            // Called when the spin animation has finished by the callback feature of the wheel because I specified callback in the parameters.
+            // -------------------------------------------------------
+            function alertPrize(indicatedSegment)
+            {
+
+                swal({
+                    title: ""+theWheel.segments[theWheel.getIndicatedSegmentNumber()].text+" HAS WON ",
+                });
+
+            }
+
+            function alertPrize2(indicatedSegment)
+            {
+                // Just alert to the user what happened.
+                // In a real project probably want to do something more interesting than this with the result.
+                swal({
+                    title: ""
+                   +theWheel.segments[theWheel.getIndicatedSegmentNumber()].text+" HAS WON "+theWheel2.segments[theWheel2.getIndicatedSegmentNumber()].text+"",
+                    buttons: true,
+                    dangerMode: true,
+
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        theWheel2.deleteSegment(theWheel2.getIndicatedSegmentNumber());
+                        theWheel2.draw()
+                        theWheel.deleteSegment(theWheel.getIndicatedSegmentNumber());
+                        theWheel.draw()
+                    } else {
+
+                    }
+                });
+
+            }
+            function getRandomColor() {
+                color = "hsl(" + Math.random() * 360 + ", 80%, 50%)";
+                return color;
+            }
+            function find(value) {
+                for (let i = 1; i < theWheel.numSegments; i++) {
+                    if (theWheel.segments[i].text.toString().toLowerCase() === value.toLowerCase()) {
+                        return i;
+                    }
+                }
+            }
+            function fillText()
+            {
+                for (let i = 1; i <= theWheel.numSegments; i++) {
+                    document.getElementById("text").value += theWheel.segments[i].text.toString();
+                      document.getElementById("text").value += "\n";}
+                for (let i = 1; i <= theWheel.numSegments; i++) {
+                    document.getElementById("text2").value += theWheel2.segments[i].text.toString();
+                    document.getElementById("text2").value += "\n";}
+            }
+            function change()
+            {
+                var name=[];
+                 name = document.getElementById("text").value.split('\n');
+                theWheel.numSegments=0;
+                for (let i = 1; i <=name.length; i++) {
+                            theWheel.addSegment({
+                                'text' : name[i].toString(),
+                                'fillStyle' : getRandomColor()
+                            }, 1);
+                    theWheel.draw()
+
+                }
+
+            }
+            function change2()
+            {
+                var name=[];
+                name = document.getElementById("text2").value.split('\n');
+                theWheel2.numSegments=0;
+                for (let i = 1; i <=name.length; i++) {
+                    theWheel2.addSegment({
+                        'text' : name[i].toString(),
+                        'fillStyle' : getRandomColor()
+                    }, 1);
+                    theWheel2.draw()
+
+                }
+
+            }
+        </script>
+    </body>
+</html>
